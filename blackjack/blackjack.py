@@ -91,7 +91,7 @@ def main():
     while text != 'quit':
 
         if betting_money <= 0:
-            print('You have no more chips.\nExiting Blackjack...')
+            print('You have no more chips.\nLeaving the table...')
             sleep(3)
             break
 
@@ -272,7 +272,7 @@ def main():
                     break
 
             elif text == 'quit':
-                print('Exiting Blackjack...')
+                print('Leaving the table...')
                 sleep(3)
 
             else:
