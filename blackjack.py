@@ -6,20 +6,50 @@ from random import choice
 
 
 def deck():
-    cards = [(2, '2♡'), (2, '2♤'), (3, '3♡'), (3, '3♤'), (4, '4♡'), (4, '4♤'),
-             (5, '5♡'), (5, '5♤'), (6, '6♡'), (6, '6♤'), (7, '7♡'), (7, '7♤'),
-             (8, '8♡'), (8, '8♤'), (9, '9♡'), (9, '9♤'), (10, '10♡'), (10,
-                                                                       '10♤'),
-             (10, 'Jack♡'), (10, 'Jack♤'), (10, 'Queen♡'), (10, 'Queen♤'),
-             (10, 'King♡'), (10, 'King♤'), (11, 'Ace♡'), (11, 'Ace♤'),
-             (2, '2♢'), (2, '2♧'), (3, '3♢'), (3, '3♧'), (4, '4♢'), (4, '4♧'),
-             (5, '5♢'), (5, '5♧'), (6, '6♢'), (6, '6♧'), (7, '7♢'), (7, '7♧'),
-             (8, '8♢'), (8, '8♧'), (9, '9♢'), (9, '9♧'), (10, '10♢'), (10,
-                                                                       '10♧'),
-             (10, 'Jack♢'), (10, 'Jack♧'), (10, 'Queen♢'), (10, 'Queen♧'),
-             (10, 'King♢'), (10, 'King♧'), (11, 'Ace♢'), (11, 'Ace♧')]
+    cards = [(2, '[2♡]'), (2, '[2♤]'), (3, '[3♡]'), (3, '[3♤]'), (4, '[4♡]'),
+             (4, '[4♤]'), (5, '[5♡]'), (5, '[5♤]'), (6, '[6♡]'), (6, '[6♤]'),
+             (7, '[7♡]'), (7, '[7♤]'), (8, '[8♡]'), (8, '[8♤]'), (9, '[9♡]'),
+             (9, '[9♤]'), (10, '[10♡]'), (10, '[10♤]'), (10, '[J♡]'),
+             (10, '[J♤]'), (10, '[Q♡]'), (10, '[Q♤]'), (10, '[K♡]'), (10,
+                                                                      '[K♤]'),
+             (11, '[A♡]'), (11, '[A♤]'), (2, '[2♢]'), (2, '[2♧]'), (3, '[3♢]'),
+             (3, '[3♧]'), (4, '[4]♢'), (4, '[4♧]'), (5, '[5♢]'), (5, '[5♧]'),
+             (6, '[6♢]'), (6, '[6♧]'), (7, '[7]♢'), (7, '[7♧]'), (8, '[8♢]'),
+             (8, '[8♧]'), (9, '[9♢]'), (9, '[9♧]'), (10, '[10♢]'),
+             (10, '[10♧]'), (10, '[J♢]'), (10, '[J♧]'), (10, '[Q♢]'),
+             (10, '[Q♧]'), (10, '[K♢]'), (10, '[K♧]'), (11, '[A♢]'), (11,
+                                                                      '[A♧]')]
     shuffle(cards)
     return cards
+
+
+def hand_value(hand):
+    aces = []
+    non_aces = []
+    if 11 in hand:
+        for card in hand:
+            if card == 11:
+                aces.append(card)
+            else:
+                non_aces.append(card)
+        for card in aces:
+            if sum(aces) + sum(non_aces) > 21:
+                aces.remove(card)
+                non_aces.append(1)
+            else:
+                non_aces.append(card)
+                aces.remove(card)
+        hand = non_aces
+        return hand
+    else:
+        return hand
+
+
+def cards_in_hand(format):
+    hands = ''
+    for cards in format:
+        hands += cards
+    return hands
 
 
 def main():
@@ -31,40 +61,52 @@ def main():
     text = ''
     while text != 'quit':
 
-        card_format = []
+        player_cards = []
         player_hand = []
         cards = deck()
+
+        first_dealer = cards.pop()
         first_player = cards.pop()
+        second_dealer = cards.pop()
         second_player = cards.pop()
 
-        card_format.append(first_player[1])
-        card_format.append(second_player[1])
+        player_cards.append(first_player[1])
+        player_cards.append(second_player[1])
 
         player_hand.append(first_player[0])
         player_hand.append(second_player[0])
 
-        first_dealer = cards.pop()
-        second_dealer = cards.pop()
+        dealer_hand = []
+        dealer_cards = []
+
+        dealer_hand.append(first_dealer[0])
+        dealer_hand.append(second_dealer[0])
+
+        dealer_cards.append(first_dealer[1])
+        dealer_cards.append(second_dealer[1])
 
         print('Wins: {}\nLoses: {}\nStandoffs: {}'.format(wins, loses, ties))
         print(
             '\n---------------------------------------------------------------\n'
         )
 
-        print('Dealing cards...')
+        print(
+            'Dealer must draw to 16, and stand on all 17\'s\nDealing cards...')
         sleep(3)
         text = ''
         while text != 'quit':
 
+            card_format = cards_in_hand(player_cards)
+            dealer_format = cards_in_hand(dealer_cards)
             print('Your hand: {}'.format(card_format))
-            print('Dealer\'s hand: {}, *'.format(first_dealer[1]))
+            print('Dealer\'s hand: {}, *'.format(dealer_cards[0]))
+            player_hand = hand_value(player_hand)
 
             if (first_player[0] + second_player[0] == 21) and (
                     first_dealer[0] + second_dealer[0] == 21):
                 print('Dealer is revealing his hole card...')
                 sleep(2)
-                print('Dealer\'s hand: {}, {}'.format(first_dealer[1],
-                                                     second_dealer[1]))
+                print('Dealer\'s hand: {}, {}'.format(dealer_format))
                 print('Standoff!')
                 print(
                     '\n---------------------------------------------------------------\n'
@@ -78,18 +120,19 @@ def main():
                     '\n---------------------------------------------------------------\n'
                 )
                 wins += 1
+
                 break
 
             elif first_dealer[0] + second_dealer[0] == 21:
                 print('Dealer is revealing his hole card...')
-                print('Dealer\'s hand: {}, {}'.format(first_dealer[1],
-                                                     second_dealer[1]))
+                print('Dealer\'s hand: {}, {}'.format(dealer_format))
                 print('Dealer has BLACKJACK!')
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
                 sleep(1)
                 loses += 1
+
                 break
 
             #choices = ['1', '2']
@@ -100,15 +143,24 @@ def main():
                 sleep(2)
                 third_player = cards.pop()
                 player_hand.append(third_player[0])
-                card_format.append(third_player[1])
+                player_cards.append(third_player[1])
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
-                if first_player[0] + second_player[0] + third_player[0] > 21:
+
+                player_hand = hand_value(player_hand)
+
+                total = 0
+                for card in range(len(player_hand)):
+                    total += player_hand[card]
+
+                if total > 21:
+                    print('Your hand: {}'.format(card_format))
                     print('You busted!')
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
+                    sleep(1)
                     loses += 1
                     break
 
@@ -120,43 +172,56 @@ def main():
                 for card in range(len(player_hand)):
                     total += player_hand[card]
 
-                if total > first_dealer[0] + second_dealer[0]:
-                    print('Dealer is revealing his hole card...')
-                    sleep(2)
-                    print('Dealer\'s hand: {}, {}'.format(
-                        first_dealer[1], second_dealer[1]))
+                print('Dealer is revealing his hole card...')
+                sleep(2)
+                print('Dealer\'s hand: {}'.format(dealer_format))
+
+                while True:
+                    # for num in range(len(dealer_hand)):
+                    dealer_total = sum(dealer_hand)
+                    if dealer_total <= 16:
+                        print('Dealer is drawing a card...')
+                        sleep(2)
+                        third_dealer = cards.pop()
+                        dealer_total += third_dealer[0]
+                        dealer_hand.append(third_dealer[0])
+                        dealer_cards.append(third_dealer[1])
+                        dealer_format = cards_in_hand(dealer_cards)
+                        print('Dealer\'s hand: {}'.format(dealer_format))
+                        continue
+                    else:
+                        break
+
+                if dealer_total > 21:
+                    print('Dealer busted!\nYou win!')
+                    print(
+                        '\n---------------------------------------------------------------\n'
+                    )
+                    wins += 1
+                    break
+
+                elif total > dealer_total:
                     print('You win!')
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
                     wins += 1
-                    player_hand.clear()
                     break
 
-                elif total < first_dealer[0] + second_dealer[0]:
-                    print('Dealer is revealing his hole card...')
-                    sleep(2)
-                    print('Dealer\'s hand: {}, {}'.format(
-                        first_dealer[1], second_dealer[1]))
+                elif total < dealer_total:
                     print('You lose!')
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
                     loses += 1
-                    player_hand.clear()
                     break
 
-                elif total == first_dealer[0] + second_dealer[0]:
-                    print('Dealer is revealing his hole card...')
-                    sleep(2)
-                    print('Dealer\'s hand: {}, {}'.format(
-                        first_dealer[1], second_dealer[1]))
+                elif total == dealer_total:
                     print('Standoff!')
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
                     ties += 1
-                    player_hand.clear()
                     break
 
             elif text == 'quit':
@@ -164,6 +229,9 @@ def main():
 
             else:
                 print('Invalid Choice!')
+                print(
+                    '\n---------------------------------------------------------------\n'
+                )
 
 
 if __name__ == '__main__':
