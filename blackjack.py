@@ -1,8 +1,10 @@
 from random import shuffle
 from time import sleep
 from random import choice
+from random import randint
 
 # ♡ ♢ ♧ ♤
+#high score: $7200 - matt
 
 
 def deck():
@@ -13,8 +15,8 @@ def deck():
              (10, '[J♤]'), (10, '[Q♡]'), (10, '[Q♤]'), (10, '[K♡]'), (10,
                                                                       '[K♤]'),
              (11, '[A♡]'), (11, '[A♤]'), (2, '[2♢]'), (2, '[2♧]'), (3, '[3♢]'),
-             (3, '[3♧]'), (4, '[4]♢'), (4, '[4♧]'), (5, '[5♢]'), (5, '[5♧]'),
-             (6, '[6♢]'), (6, '[6♧]'), (7, '[7]♢'), (7, '[7♧]'), (8, '[8♢]'),
+             (3, '[3♧]'), (4, '[4♢]'), (4, '[4♧]'), (5, '[5♢]'), (5, '[5♧]'),
+             (6, '[6♢]'), (6, '[6♧]'), (7, '[7♢]'), (7, '[7♧]'), (8, '[8♢]'),
              (8, '[8♧]'), (9, '[9♢]'), (9, '[9♧]'), (10, '[10♢]'),
              (10, '[10♧]'), (10, '[J♢]'), (10, '[J♧]'), (10, '[Q♢]'),
              (10, '[Q♧]'), (10, '[K♢]'), (10, '[K♧]'), (11, '[A♢]'), (11,
@@ -52,14 +54,46 @@ def cards_in_hand(format):
     return hands
 
 
+def bet(betting_money):
+    while True:
+        bet = input('How much are you betting?\n$')
+        if bet.isdigit():
+            if betting_money - int(bet) >= 0:
+                return int(bet)
+            else:
+                print('Not enough chips!')
+                print(
+                    '\n---------------------------------------------------------------\n'
+                )
+        else:
+            print('\nInvalid input!')
+            print(
+                '\n---------------------------------------------------------------\n'
+            )
+
+
 def main():
 
     wins = 0
     loses = 0
     ties = 0
+    betting_money = round(randint(200, 1000), -2)
+    print('Starting up Blackjack...')
+    print(
+        '\n---------------------------------------------------------------\n')
+    sleep(3)
+    print(
+        'The casino has given you a complimentary of ${} worth of \nchips. Enjoy the blackjack tables.\n'.
+        format(betting_money))
+    sleep(2)
 
     text = ''
     while text != 'quit':
+
+        if betting_money <= 0:
+            print('You have no more chips.\nExiting Blackjack...')
+            sleep(3)
+            break
 
         player_cards = []
         player_hand = []
@@ -85,13 +119,18 @@ def main():
         dealer_cards.append(first_dealer[1])
         dealer_cards.append(second_dealer[1])
 
-        print('Wins: {}\nLoses: {}\nStandoffs: {}'.format(wins, loses, ties))
+        print('Chips in cash value: ${}\nWins: {}\nLoses: {}\nStandoffs: {}'.
+              format(betting_money, wins, loses, ties))
+        print('Beginning round...')
+        sleep(2)
+        betting = bet(betting_money)
         print(
             '\n---------------------------------------------------------------\n'
         )
 
         print(
-            'Dealer must draw to 16, and stand on all 17\'s\nDealing cards...')
+            'Bet: ${}\nDealer must draw to 16, and stand on all H17\'s\nDealing cards...'.
+            format(betting))
         sleep(3)
         text = ''
         while text != 'quit':
@@ -106,8 +145,8 @@ def main():
                     first_dealer[0] + second_dealer[0] == 21):
                 print('Dealer is revealing his hole card...')
                 sleep(2)
-                print('Dealer\'s hand: {}, {}'.format(dealer_format))
-                print('Standoff!')
+                print('Dealer\'s hand: {}'.format(dealer_format))
+                print('Standoff!\nBet returned')
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
@@ -115,7 +154,9 @@ def main():
                 break
 
             elif first_player[0] + second_player[0] == 21:
-                print('Player has BLACKJACK!')
+                betting_money += betting * 1.5
+                print('Player has BLACKJACK!\nPayout: ${}'.format(
+                    betting * 2.5))
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
@@ -125,12 +166,13 @@ def main():
 
             elif first_dealer[0] + second_dealer[0] == 21:
                 print('Dealer is revealing his hole card...')
-                print('Dealer\'s hand: {}, {}'.format(dealer_format))
+                print('Dealer\'s hand: {}'.format(dealer_format))
                 print('Dealer has BLACKJACK!')
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
                 sleep(1)
+                betting_money -= betting_money
                 loses += 1
 
                 break
@@ -144,6 +186,7 @@ def main():
                 third_player = cards.pop()
                 player_hand.append(third_player[0])
                 player_cards.append(third_player[1])
+                card_format = cards_in_hand(player_cards)
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
@@ -161,6 +204,7 @@ def main():
                         '\n---------------------------------------------------------------\n'
                     )
                     sleep(1)
+                    betting_money -= betting
                     loses += 1
                     break
 
@@ -177,7 +221,6 @@ def main():
                 print('Dealer\'s hand: {}'.format(dealer_format))
 
                 while True:
-                    # for num in range(len(dealer_hand)):
                     dealer_total = sum(dealer_hand)
                     if dealer_total <= 16:
                         print('Dealer is drawing a card...')
@@ -193,7 +236,9 @@ def main():
                         break
 
                 if dealer_total > 21:
-                    print('Dealer busted!\nYou win!')
+                    betting_money += betting
+                    print('Dealer busted!\nYou win!\nPayout: ${}'.format(
+                        betting * 2))
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
@@ -201,7 +246,8 @@ def main():
                     break
 
                 elif total > dealer_total:
-                    print('You win!')
+                    betting_money += betting
+                    print('You win!\nPayout: ${}'.format(betting * 2))
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
@@ -213,11 +259,12 @@ def main():
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
+                    betting_money -= betting
                     loses += 1
                     break
 
                 elif total == dealer_total:
-                    print('Standoff!')
+                    print('Standoff!\nBet returned')
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
@@ -225,7 +272,8 @@ def main():
                     break
 
             elif text == 'quit':
-                break
+                print('Exiting Blackjack...')
+                sleep(3)
 
             else:
                 print('Invalid Choice!')
