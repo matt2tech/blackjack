@@ -61,12 +61,12 @@ def bet(betting_money):
             if betting_money - int(bet) >= 0:
                 return int(bet)
             else:
-                print('Not enough chips!')
+                print('Not enough chips')
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
         else:
-            print('\nInvalid input!')
+            print('\nInvalid input')
             print(
                 '\n---------------------------------------------------------------\n'
             )
@@ -83,7 +83,7 @@ def main():
         '\n---------------------------------------------------------------\n')
     sleep(3)
     print(
-        'The casino has given you a complimentary of ${} worth of \nchips. Enjoy the blackjack tables.\n'.
+        'Starting chips in cash value: ${}\n'.
         format(betting_money))
     sleep(2)
 
@@ -146,7 +146,7 @@ def main():
                 print('Dealer is revealing his hole card...')
                 sleep(2)
                 print('Dealer\'s hand: {}'.format(dealer_format))
-                print('Standoff!\nBet returned')
+                print('Standoff\nBet returned')
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
@@ -155,7 +155,7 @@ def main():
 
             elif first_player[0] + second_player[0] == 21:
                 betting_money += betting * 1.5
-                print('Player has BLACKJACK!\nPayout: ${}'.format(
+                print('Player has BLACKJACK\nPayout: ${}'.format(
                     betting * 2.5))
                 print(
                     '\n---------------------------------------------------------------\n'
@@ -167,7 +167,7 @@ def main():
             elif first_dealer[0] + second_dealer[0] == 21:
                 print('Dealer is revealing his hole card...')
                 print('Dealer\'s hand: {}'.format(dealer_format))
-                print('Dealer has BLACKJACK!')
+                print('Dealer has BLACKJACK')
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
@@ -199,7 +199,7 @@ def main():
 
                 if total > 21:
                     print('Your hand: {}'.format(card_format))
-                    print('You busted!')
+                    print('Player busted')
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
@@ -237,7 +237,7 @@ def main():
 
                 if dealer_total > 21:
                     betting_money += betting
-                    print('Dealer busted!\nYou win!\nPayout: ${}'.format(
+                    print('Dealer busted\nPlayer wins\nPayout: ${}'.format(
                         betting * 2))
                     print(
                         '\n---------------------------------------------------------------\n'
@@ -247,7 +247,7 @@ def main():
 
                 elif total > dealer_total:
                     betting_money += betting
-                    print('You win!\nPayout: ${}'.format(betting * 2))
+                    print('Player wins\nPayout: ${}'.format(betting * 2))
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
@@ -255,7 +255,7 @@ def main():
                     break
 
                 elif total < dealer_total:
-                    print('You lose!')
+                    print('Player loses')
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
@@ -264,7 +264,7 @@ def main():
                     break
 
                 elif total == dealer_total:
-                    print('Standoff!\nBet returned')
+                    print('Standoff\nBet returned')
                     print(
                         '\n---------------------------------------------------------------\n'
                     )
@@ -276,7 +276,7 @@ def main():
                 sleep(3)
 
             else:
-                print('Invalid Choice!')
+                print('Invalid Choice')
                 print(
                     '\n---------------------------------------------------------------\n'
                 )
