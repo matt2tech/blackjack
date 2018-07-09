@@ -4,7 +4,7 @@ from random import choice
 from random import randint
 
 # ♡ ♢ ♧ ♤
-#high score: $7200 - matt
+#high score: $14000 - matt
 
 
 def deck():
